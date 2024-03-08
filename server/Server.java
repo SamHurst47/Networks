@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+
 public class Server {
     private static final int PORT = 9101;
     private static final String SERVER_FILES_DIRECTORY = "serverFiles"; // Corrected directory declaration
@@ -41,22 +42,33 @@ public class Server {
 				} else if (clientMessage != null && clientMessage.equals("PUT")) {
     				System.out.println("Received 'PUT' command from client. Receiving file...");
 					String filename = clientMessage;
-					// Receive file content from the client
-					StringBuilder fileContent = new StringBuilder();
-					String line;
-					while ((line = in.readLine()) != null && !line.equals("END")) {
-						fileContent.append(line).append("\n");
-					}
-				
-					// Write received file content to a file on the server
-					try (PrintWriter fileWriter = new PrintWriter(new FileWriter("./serverFiles/"+filename))) {
-						fileWriter.println(fileContent.toString());
-						System.out.println("File received and written to the server.");
-					} catch (IOException e) {	
-						e.printStackTrace();
-						System.err.println("Error writing file on server.");
-					}
-
+                    filename = clientMessage;
+                    boolean filenameExists = false;
+                    if (filename != null) {
+                        for (String curfile : files) {
+                            if (curfile.equals(filename)) {
+                                filenameExists = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (filenameExists) {
+                        // Receive file content from the client
+                        StringBuilder fileContent = new StringBuilder();
+                        String line;
+                        while ((line = in.readLine()) != null && !line.equals("END")) {
+                            fileContent.append(line).append("\n");
+                        }
+                    
+                        // Write received file content to a file on the server
+                        try (PrintWriter fileWriter = new PrintWriter(new FileWriter("./serverFiles/"+filename))) {
+                            fileWriter.println(fileContent.toString());
+                            System.out.println("File received and written to the server.");
+                        } catch (IOException e) {	
+                            e.printStackTrace();
+                            System.err.println("Error writing file on server.");
+                        }
+                    }
                 } else {
                     System.err.println("Invalid command received from client.");
                 }
