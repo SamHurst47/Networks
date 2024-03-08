@@ -52,7 +52,7 @@ public class Server {
                             }
                         }
                     }
-                    if (filenameExists) {
+                    if (!filenameExists) {
                         // Receive file content from the client
                         StringBuilder fileContent = new StringBuilder();
                         String line;
