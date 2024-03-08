@@ -49,7 +49,7 @@ public class Server {
 					}
 				
 					// Write received file content to a file on the server
-					try (PrintWriter fileWriter = new PrintWriter(new FileWriter("serverFiles/"+filename))) {
+					try (PrintWriter fileWriter = new PrintWriter(new FileWriter("./serverFiles/"+filename))) {
 						fileWriter.println(fileContent.toString());
 						System.out.println("File received and written to the server.");
 					} catch (IOException e) {	
