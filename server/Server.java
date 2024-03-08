@@ -89,7 +89,7 @@ public class Server {
     private static void logAction(int type, ServerSocket clientSocket) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE, true))) {
             LocalDateTime timestamp = LocalDateTime.now();
-            String formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("dd-MM-yyyy | HH:mm:ss"));
+            String formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("dd-MM-yyyy|HH:mm:ss"));
             
             // Getting client IP address
             InetAddress clientAddress = clientSocket.getInetAddress();
