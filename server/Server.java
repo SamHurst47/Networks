@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class Server {
     private static final int PORT = 9101;
-    private static final String SERVER_FILES_DIRECTORY = "./server/serverFiles"; // Corrected directory declaration
+    private static final String SERVER_FILES_DIRECTORY = "serverFiles"; // Corrected directory declaration
 
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
