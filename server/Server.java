@@ -41,11 +41,8 @@ public class Server {
                     } 
 				} else if (clientMessage != null && clientMessage.equals("PUT")) {
     				System.out.println("Received 'PUT' command from client. Receiving file...");
-					String filename;
-                    while (clientMessage == "PUT") {
-                        filename = clientMessage;    
-                    }
-                    filename = clientMessage;
+                    clientMessage = in.readLine();
+                    String filename = clientMessage;
                     boolean filenameExists = false;
                     if (filename != null) {
                         for (String curfile : files) {
