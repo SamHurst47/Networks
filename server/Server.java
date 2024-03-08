@@ -11,9 +11,10 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+
 public class Server {
     private static final int PORT = 9101;
-    private static final String SERVER_FILES_DIRECTORY = "/serverFiles"; // Corrected directory declaration
+    private static final String SERVER_FILES_DIRECTORY = "serverFiles"; // Corrected directory declaration
     private static final String LOG_FILE = "Log.txt";
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -31,8 +32,9 @@ public class Server {
                 
                 if (clientMessage != null && clientMessage.equals("LIST")) {
                     System.out.println("Received 'LIST' command from client. Sending File Names");
-                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                     logAction(0,serverSocket);
+                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+
                     if (files != null && files.length > 0) {
                         for (String file : files) {
                             out.println(file);
@@ -45,23 +47,36 @@ public class Server {
 				} else if (clientMessage != null && clientMessage.equals("PUT")) {
     				System.out.println("Received 'PUT' command from client. Receiving file...");
                     logAction(1,serverSocket);
-					String filename = clientMessage;
-					// Receive file content from the client
-					StringBuilder fileContent = new StringBuilder();
-					String line ;
-					while ((line = in.readLine()) != null && !line.equals("END")) {
-						fileContent.append(line).append("\n");
-					}
-				
-					// Write received file content to a file on the server
-					try (PrintWriter fileWriter = new PrintWriter(new FileWriter("serverFiles/"+filename))) {
-						fileWriter.println(fileContent.toString());
-						System.out.println("File received and written to the server.");
-					} catch (IOException e) {	
-						e.printStackTrace();
-						System.err.println("Error writing file on server.");
-					}
-
+                    clientMessage = in.readLine();
+                    String filename = clientMessage;
+                    boolean filenameExists = false;
+                    if (filename != null) {
+                        for (String curfile : files) {
+                            if (curfile.equals(filename)) {
+                                filenameExists = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!filenameExists) {
+                        // Receive file content from the client
+                        StringBuilder fileContent = new StringBuilder();
+                        String line;
+                        while ((line = in.readLine()) != null && !line.equals("END")) {
+                            fileContent.append(line).append("\n");
+                        }
+                    
+                        // Write received file content to a file on the server
+                        try (PrintWriter fileWriter = new PrintWriter(new FileWriter("./serverFiles/"+filename))) {
+                            fileWriter.println(fileContent.toString());
+                            System.out.println("File received and written to the server.");
+                        } catch (IOException e) {	
+                            e.printStackTrace();
+                            System.err.println("Error writing file on server.");
+                        }
+                    } else {
+                        System.err.println("Error file already on server.");
+                    }
                 } else {
                     System.err.println("Invalid command received from client.");
                 }
