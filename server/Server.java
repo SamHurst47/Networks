@@ -68,6 +68,8 @@ public class Server {
                             e.printStackTrace();
                             System.err.println("Error writing file on server.");
                         }
+                    } else {
+                        System.err.println("Error file already on server.");
                     }
                 } else {
                     System.err.println("Invalid command received from client.");
