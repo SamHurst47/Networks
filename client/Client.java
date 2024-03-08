@@ -4,7 +4,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 
 public class Client {
@@ -15,9 +14,7 @@ public class Client {
             System.out.println("Connected to server: " + socket);
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            InetAddress clientAddress = socket.getInetAddress();
-            String clientIP = clientAddress.getHostAddress();
-            out.println(clientIP);
+
             if (args.length > 0) {
                 if (args[0].equals("list")) {
                     out.println("LIST");

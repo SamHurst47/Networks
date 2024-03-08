@@ -36,7 +36,6 @@ public class Server {
                     System.out.println("Client connected: " + clientSocket);
     
                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                    String clientIP = in.readLine();
                     String clientMessage = in.readLine();
                     
                     File directory = new File(SERVER_FILES_DIRECTORY);
@@ -44,7 +43,7 @@ public class Server {
                     
                     if (clientMessage != null && clientMessage.equals("LIST")) {
                         System.out.println("Received 'LIST' command from client. Sending File Names");
-                        logAction(0, clientIP); // Call logAction without passing any variable
+                        logAction(0, clientSocket); // Call logAction without passing any variable
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
     
                         if (files != null && files.length > 0) {
@@ -58,7 +57,7 @@ public class Server {
                         } 
                     } else if (clientMessage != null && clientMessage.equals("PUT")) {
                         System.out.println("Received 'PUT' command from client. Receiving file...");
-                        logAction(1, clientIP); // Call logAction without passing any variable
+                        logAction(1, clientSocket); // Call logAction without passing any variable
                         clientMessage = in.readLine();
                         String filename = clientMessage;
                         boolean filenameExists = false;
@@ -100,10 +99,14 @@ public class Server {
             e.printStackTrace();
         }
     }    
-    private static void logAction(int type, String clientIP) {
+    private static void logAction(int type, Socket clientSocket) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE, true))) {
             LocalDateTime timestamp = LocalDateTime.now();
             String formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("dd-MM-yyyy|HH:mm:ss"));
+            
+            // Getting client IP address
+            InetAddress clientAddress = clientSocket.getInetAddress();
+            String clientIP = clientAddress.getHostAddress();
             
             // Determine request type
             String requestType;
