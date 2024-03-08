@@ -28,7 +28,7 @@ public class Client {
                         return;
                     }
                     String fileName = args[1];
-					System.out.println("client/"+fileName);
+					out.println("client/"+fileName);
                     File file = new File(fileName);
                     if (!file.exists() || !file.isFile()) {
                         System.err.println("Error: File does not exist.");
