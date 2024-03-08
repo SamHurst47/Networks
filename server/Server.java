@@ -16,6 +16,7 @@ public class Server {
     private static final int PORT = 9101;
     private static final String SERVER_FILES_DIRECTORY = "serverFiles"; // Corrected directory declaration
     private static final String LOG_FILE = "Log.txt";
+    private static int first = 0;
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server listening on port " + PORT + "...");
@@ -87,24 +88,39 @@ public class Server {
     }
 
     private static void logAction(int type, ServerSocket clientSocket) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE, true))) {
-            LocalDateTime timestamp = LocalDateTime.now();
-            String formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("dd-MM-yyyy|HH:mm:ss"));
-            
-            // Getting client IP address
-            InetAddress clientAddress = clientSocket.getInetAddress();
-            String clientIP = clientAddress.getHostAddress();
-            
-            // Determine request type
-            String requestType;
-            if (type == 1) {
-                requestType = "PUT";
-            } else {
-                requestType = "LIST";
+        try {
+            // Check if it's the first time logAction is called in this session
+            if (first == 0) {
+                
+                File logFile = new File(LOG_FILE);
+                boolean created = logFile.createNewFile(); // Attempt to create new file
+                
+                if (!created) {
+                    System.err.println("Failed to create log file."); // Print error message if file creation fails
+                }
+                first = 1;
             }
             
-            writer.write(formattedTimestamp + "|" + clientIP + "|" + requestType);
-            writer.newLine();
+            // Now, open the file for writing
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE, true))) {
+                LocalDateTime timestamp = LocalDateTime.now();
+                String formattedTimestamp = timestamp.format(DateTimeFormatter.ofPattern("dd-MM-yyyy|HH:mm:ss"));
+                
+                // Getting client IP address
+                InetAddress clientAddress = clientSocket.getInetAddress();
+                String clientIP = clientAddress.getHostAddress();
+                
+                // Determine request type
+                String requestType;
+                if (type == 1) {
+                    requestType = "PUT";
+                } else {
+                    requestType = "LIST";
+                }
+                
+                writer.write(formattedTimestamp + "|" + clientIP + "|" + requestType);
+                writer.newLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
