@@ -29,7 +29,7 @@ public class Client {
             }
         } catch (IOException e) {
             // Handle IOException
-            e.printStackTrace();
+            System.err.println("Error: No sever found running on port given.");
         }
     }
 
