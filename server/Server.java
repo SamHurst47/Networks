@@ -12,7 +12,9 @@ public class Server {
     private static final int MAX_THREADS = 20; // Maximum number of concurrent connections
 
     public static void main(String[] args) {
+
         try {
+            System.out.println("Server: Server Started.");
             // Delete existing log file if it exists
             File logFile = new File(LOG_FILE);
             if (logFile.exists()) {
@@ -21,15 +23,16 @@ public class Server {
 
             // Create a new log file
             logFile.createNewFile();
+            System.out.println("Server: Log file generated.");
 
             // Create a fixed-size thread pool
             ExecutorService threadPool = Executors.newFixedThreadPool(MAX_THREADS);
 
             try (// Start server socket
-            ServerSocket serverSocket = new ServerSocket(PORT)) {
+                 ServerSocket serverSocket = new ServerSocket(PORT)) {
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
-                    //System.out.println("Client connected: " + clientSocket);
+                    System.out.println("Server: Client connected.");
 
                     // Execute a new ServerThread for each client connection
                     threadPool.execute(new ServerThread(clientSocket));
@@ -59,7 +62,7 @@ public class Server {
 
                 if (clientMessage != null) {
                     if (clientMessage.equals("OP1")) {
-                        System.out.println("Received 'LIST' command from client. Sending File Names");
+                        System.out.println("Server: Received 'LIST' command.");
                         logAction(0, clientSocket);
                         out.println(files.length);
                         if (files != null && files.length > 0) {
@@ -67,11 +70,12 @@ public class Server {
                                 out.println(file);
                             }
                             out.println("END"); // Signal the end of file list
+                            System.out.println("Server: Files on Server list sent to client.");
                         } else {
-                            System.out.println("No files found in SeverFiles");
+                            System.err.println("Server Error: No files on Server.");
                         }
                     } else if (clientMessage.equals("OP2")) {
-                        System.out.println("Received 'PUT' command from client. Receiving file...");
+                        System.out.println("Server: Received 'PUT' command.");
                         logAction(1, clientSocket);
                         clientMessage = in.readLine();
                         String filename = clientMessage;
@@ -91,22 +95,21 @@ public class Server {
                             while ((line = in.readLine()) != null && !line.equals("END")) {
                                 fileContent.append(line).append("\n");
                             }
-
                             // Write received file content to a file on the server
                             try (PrintWriter fileWriter = new PrintWriter(new FileWriter("./serverFiles/" + filename))) {
                                 fileWriter.println(fileContent.toString());
-                                System.out.println("File received and written to the server.");
+                                System.out.println("Server: File '" + filename + "' received and successfully written to the server.");
                                 out.println("S");
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                System.err.println("Error: writing file on server.");
+                                System.err.println("Server Error: Failed to write file '" + filename + "' on server.");
                             }
                         } else {
-                            System.err.println("Error: file already on server.");
+                            System.err.println("Server Error: File '" + filename + "' already exists on server.");
                             out.println("F");
                         }
                     } else {
-                        System.err.println("Error: Invalid command received from client.");
+                        System.err.println("Server Error: Invalid command '" + clientMessage + "' received from client.");
                     }
                 }
             } catch (IOException e) {
