@@ -46,6 +46,7 @@ public class Server {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("Server Error: Server could not connect to client.");
         }
     }
 
@@ -83,12 +84,14 @@ public class Server {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                System.err.println("Server Error: Server could not contact client.");
             } finally {
                 try {
                     // Close client socket
                     clientSocket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    System.err.println("Server Error: Server could not close connection client.");
                 }
             }
             System.out.println("Server: Client Disconnected.");
@@ -113,6 +116,7 @@ public class Server {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("Server Error: Server could not complete list command.");
         }
     }
 
@@ -142,6 +146,7 @@ public class Server {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("Server Error: Server could not complete put command.");
         }
     }
 
@@ -181,6 +186,7 @@ public class Server {
             writer.newLine();
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("Server Error: Server could not log action.");
         }
     }
 }
