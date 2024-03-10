@@ -51,9 +51,6 @@ public class Server {
         @Override
         public void run() {
             try {
-                // Simulate some processing time
-                Thread.sleep((10000)); // Random sleep between 0 to 2000 milliseconds
-
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
@@ -62,19 +59,19 @@ public class Server {
                 String[] files = directory.list();
 
                 if (clientMessage != null) {
-                    if (clientMessage.equals("LIST")) {
+                    if (clientMessage.equals("OP1")) {
                         System.out.println("Received 'LIST' command from client. Sending File Names");
                         logAction(0, clientSocket);
+                        out.println(files.length);
                         if (files != null && files.length > 0) {
                             for (String file : files) {
                                 out.println(file);
                             }
                             out.println("END"); // Signal the end of file list
                         } else {
-                            out.println("No files found in server directory.");
-                            out.println("END"); // Signal the end of communications list
+                            System.out.println("No files found in SeverFiles");
                         }
-                    } else if (clientMessage.equals("PUT")) {
+                    } else if (clientMessage.equals("OP2")) {
                         System.out.println("Received 'PUT' command from client. Receiving file...");
                         logAction(1, clientSocket);
                         clientMessage = in.readLine();
@@ -100,19 +97,19 @@ public class Server {
                             try (PrintWriter fileWriter = new PrintWriter(new FileWriter("./serverFiles/" + filename))) {
                                 fileWriter.println(fileContent.toString());
                                 System.out.println("File received and written to the server.");
+                                out.println("S");
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                System.err.println("Error writing file on server.");
+                                System.err.println("Error: writing file on server.");
                             }
                         } else {
-                            System.err.println("Error file already on server.");
+                            System.err.println("Error: file already on server.");
+                            out.println("F");
                         }
                     } else {
-                        System.err.println("Invalid command received from client.");
+                        System.err.println("Error: Invalid command received from client.");
                     }
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -123,7 +120,6 @@ public class Server {
                 }
             }
         }
-
 
         private void logAction(int type, Socket clientSocket) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE, true))) {
