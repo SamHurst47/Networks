@@ -52,7 +52,7 @@ public class Server {
         public void run() {
             try {
                 // Simulate some processing time
-                Thread.sleep((long) (Math.random() * 2000)); // Random sleep between 0 to 2000 milliseconds
+                Thread.sleep((10000)); // Random sleep between 0 to 2000 milliseconds
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
