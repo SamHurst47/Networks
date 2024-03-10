@@ -6,9 +6,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
-    private static final int PORT = 9101; 
-    private static final String SERVER_FILES_DIRECTORY = "serverFiles"; 
-    private static final String LOG_FILE = "Log.txt"; 
+    private static final int PORT = 9101;
+    private static final String SERVER_FILES_DIRECTORY = "serverFiles";
+    private static final String LOG_FILE = "Log.txt";
     private static final int MAX_THREADS = 20;
 
     public static void main(String[] args) {
@@ -102,7 +102,7 @@ public class Server {
             out.println(files.length); // Send number of files to client
             if (files != null && files.length > 0) {
                 // Send list of files to client
-                for (String file : files) {
+                for (String file: files) {
                     out.println(file);
                 }
                 out.println("END"); // Signal the end of file list
@@ -116,7 +116,7 @@ public class Server {
         }
     }
 
-    private static void handlePutCommand(BufferedReader in, PrintWriter out, String[] files) {
+    private static void handlePutCommand(BufferedReader in , PrintWriter out, String[] files) {
         try {
             System.out.println("Server: Received 'PUT' command.");
             logAction(1);
@@ -124,7 +124,7 @@ public class Server {
             boolean filenameExists = false;
             if (filename != null) {
                 // Check if filename already exists on server
-                for (String curfile : files) {
+                for (String curfile: files) {
                     if (curfile.equals(filename)) {
                         filenameExists = true;
                         break;
@@ -145,7 +145,7 @@ public class Server {
         }
     }
 
-    private static void receiveFile(BufferedReader in, String filename) {
+    private static void receiveFile(BufferedReader in , String filename) {
         try {
             // Create server files directory if it doesn't exist
             File directory = new File(SERVER_FILES_DIRECTORY);
