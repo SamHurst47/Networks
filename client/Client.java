@@ -43,8 +43,9 @@ public class Client {
                     }
                     out.println("END"); // Signal end of file
                     System.out.println("File sent to server successfully.");
+                    
                 } else {
-                    System.err.println("error");
+                    System.err.println("Error: Invalid command");
                 }
             }
         } catch (IOException e) {

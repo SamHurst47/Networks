@@ -51,6 +51,9 @@ public class Server {
         @Override
         public void run() {
             try {
+                // Simulate some processing time
+                Thread.sleep((long) (Math.random() * 2000)); // Random sleep between 0 to 2000 milliseconds
+
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
@@ -108,6 +111,8 @@ public class Server {
                         System.err.println("Invalid command received from client.");
                     }
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -118,6 +123,7 @@ public class Server {
                 }
             }
         }
+
 
         private void logAction(int type, Socket clientSocket) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE, true))) {
