@@ -25,16 +25,15 @@ public class Server {
             // Create a fixed-size thread pool
             ExecutorService threadPool = Executors.newFixedThreadPool(MAX_THREADS);
 
-            // Start server socket
-            ServerSocket serverSocket = new ServerSocket(PORT);
-            System.out.println("Server listening on port " + PORT + "...");
+            try (// Start server socket
+            ServerSocket serverSocket = new ServerSocket(PORT)) {
+                while (true) {
+                    Socket clientSocket = serverSocket.accept();
+                    //System.out.println("Client connected: " + clientSocket);
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
-
-                // Execute a new ServerThread for each client connection
-                threadPool.execute(new ServerThread(clientSocket));
+                    // Execute a new ServerThread for each client connection
+                    threadPool.execute(new ServerThread(clientSocket));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
