@@ -41,6 +41,8 @@ public class Server {
 
                     // Handle each client connection in a separate thread
                     threadPool.execute(new ServerThread(clientSocket));
+
+                    System.out.println("Server: Client Dis.");
                 }
             }
         } catch (IOException e) {
